@@ -2,7 +2,7 @@
 This is an App which visualizes all the real time tweets on a SVG Map using Twitter Stream API. 
 Server.js serves as the server for the clients. 
 
-<b>To run it:</b>
+<h3><b>To RUN:</b></h3>
 
 Download this project.
 
@@ -20,7 +20,7 @@ Open web browser and navigate to:
 
 Mission Accomplished! You are done.
 
-<b>Technologies</b> used:
+<h3>Technologies used:</h3>
 
 FrameWork:
 Node.js, Express
