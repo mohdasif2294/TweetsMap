@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Tweets Live Map</title>
+
+<script src="js/d3.min.js"></script>              <!-- D3 js for Map -->
+<script src="socket.io/socket.io.js"></script>    <!-- Socket client-->
+<script src="js/jquery-2.1.3.min.js" type="text/javascript" charset="UTF-8"></script>
+<script src="js/bootstrap.min.js" type="text/javascript" charset="UTF-8"></script>
+<link href="css/bootstrap.min.css" rel="stylesheet" />
+<script src="http://d3js.org/d3.geo.projection.v0.min.js"></script>
+<script src="js/topojson.v1.min.js"></script>     <!--World Map geo Data -->
+
+<style>
+  .graticule {
+    fill: none;
+    stroke: #333;
+    stroke-width: .5px;
+    stroke-opacity: .5;
+  }
+  .land {
+    fill: #383838;
+  }
+  .boundary {
+    fill: none;
+    stroke: #F9690E;
+    stroke-width: .65px;
+  }
+  .map_area{
+    background-color: #C5EFF7;
+  }
+  .bubble {
+    fill-opacity: .5;
+    stroke: #F1A9A0;
+    stroke-width: 0.5px;
+  }
+  .btn{
+    padding: 6px;
+    margin-bottom: 1px;
+  }
+  .btn-danger:focus,.btn-danger:active,.btn-danger:active,.btn-danger:visited{
+    outline: #D64541;
+  }
+  input{
+    padding-right: 8px;
+    padding-left: 8px;
+    line-height: 2.0;
+  }
+  .btn-primary{
+    margin-right:10px;
+  }
+</style>
+
+<body>
+  <div class="container-fluid">
+
+    <div class="row" style="background-color:">
+      <div class="col-md-8 col-xs-8">
+        <h3 style="font-size:28px">
+          <u><b>Tweets Live Map</b></u>
+        </h3> 
+      </div>
+      <div class="col-md-4 col-xs-4" style="text-align:right;margin-top:17px;">
+        <input type="number" max="30" min="1" id="time" name="time"  required>
+        <button type="type" class="btn btn-primary" onclick="setduration();" >Set Duration</button>
+        <button type="type" class="btn btn-danger" onclick="resetmap();">Reset Map</button>
+      </div>
+    </div>
+    
+    <div class="row map_area"><!--Map Canvas Area-->
+      <div class="map">
+      </div>
+    </div>
+  </div>
+  
+<!--Script for Loading D3 Map and Recieve coordinates from Server-->
+  <script>
+  //Setting Height and width of SVG canvas
+    var width = 1280,
+    height = 580;
+
+  //Projecting 3D world in 2D 
+    var projection = d3.geo.patterson()
+    .scale(195)
+    .translate([width / 2, height / 2])
+    .precision(.1);
+
+  //Converting worldJson coordinates to SVG coordinates and paths  
+    var path = d3.geo.path()
+    .projection(projection);
+
+    //Creating graticule of Earth's sphere
+    var graticule = d3.geo.graticule();
+
+  //Creating SVG canvas
+    var svg = d3.select(".map").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+    //Adding all the coordinates and paths to SVG 
+    svg.append("path")
+    .datum(graticule)
+    .attr("d", path);
+
+    //var g = svg.append("g");
+
+    //reading world Json to Plot shapes and boundaries
+    d3.json("Json/world-110m.json", function(error, world) {
+      svg.insert("path", ".graticule")
+      .datum(topojson.feature(world, world.objects.land))
+      .attr("class", "land")
+      .attr("d", path);
+
+      //Adding graticule (but not showing) and marking boundaries of the countries
+      svg.insert("path", ".graticule")
+      .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
+      .attr("class", "boundary")
+      .attr("d", path);
+
+      //Function to plot a coordinate on the SVG canvas
+      function putcoord(data) {
+      
+        console.log(projection([data.lng,data.lat]));
+
+        //Creating new svg element
+        svg_x=svg.append("svg")
+        svg_x.selectAll("circle")
+        .data([data]) //Reading the tweet coordinate
+        .enter()
+        .append("circle") //Setting Attributes and style
+        .attr("class", "bubble")
+        .attr("cx", function (d) { return projection([d.lng,d.lat])[0]; })
+        .attr("cy", function (d) { return projection([d.lng,d.lat])[1]; })
+        .attr("r", "5px")
+        .style("fill", " #FF1C00")
+        .style("fill-opacity","0.5")
+    
+      };
+
+      //Checking whether socket is initialised or not
+      if(io !== undefined) {
+        // Storage for WebSocket connections
+        var socket = io.connect('http://localhost:8081');	
+
+        //On recieving twitter stream data calling function to plot coordinates
+        socket.on('twitter-stream', function (tweet) {
+          putcoord(tweet);
+        });
+
+        // Listens for a success response from the server to check the connection was successful or not.
+        socket.on("connected", function(r) {
+
+        //connection established now sending acknowldgement to the server that client is ready to start receiving tweets.
+          socket.emit("Send tweets");
+        });
+      }
+   });
+
+  //Setting height of the d3 canvas
+  d3.select(self.frameElement).style("height", height + "px");
+  
+  //Function to reset the Map i.e removing all the circles
+  function resetmap(){
+    d3.selectAll('circle').transition()
+    .duration(400)
+    .delay(170)
+    .ease("out-in")
+    .attr("r","12px")
+    .style("fill","#F89406")
+    .style("fill-opacity","0.8")
+    .remove()
+  }
+
+  /*
+  var tim_dur=600000;
+
+  var setDur=setInterval(function(){
+    resetmap();
+  },tim_dur);
+
+  function setduration(){
+    
+    clearInterval(setDur);
+
+    tim_dur=60*1000*(document.getElementById('time').value);
+
+    if(isNaN(tim_dur)){
+      alert("No time duration is given or Time duration not a valid number value"); 
+    }
+    else{
+      setDur(tim_dur);
+    }
+  };
+  */
+
+</script>
+
+
+</body>

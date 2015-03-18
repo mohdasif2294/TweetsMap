@@ -1,0 +1,20 @@
+{
+  "name": "Tweets Live Map",
+  "version": "0.0.1",
+  "author": "Mohammad Asif",
+  "private": true,
+  "description": "The App creates real time Map of tweets pouring from all over the world using Twitter Stream API(Node-twitter),Nodejs,D3.js,socket.io",
+  "url": "http://github.com/mohdasif2294/TweetsMap",
+  "repository" :
+  { "type" : "git"
+  , "url" : "http://github.com/mohdasif2294/TweetsMap.git"
+  },
+  "scripts": {
+    "start": "node app"
+  },
+  "dependencies": {
+    "express": "*",
+    "twitter": "*",
+    "socket.io": "*"
+  }
+}
