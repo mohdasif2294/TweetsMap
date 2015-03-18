@@ -28,7 +28,7 @@ console.log("Server Initiation........");
 //Setup routing for app
 app.use(express.static(__dirname + '/public'));
 var count=0;
-//Create web sockets connection.
+
 io.sockets.on('connection', function (socket) {
 
   //On Connection with Client
@@ -42,10 +42,10 @@ io.sockets.on('connection', function (socket) {
         twit_stream();
       },86000);
 
-      //To remove lag of one set Interval initially.
+      //To remove lag of one set interval initially.
       twit_stream();
 
-      //Most Important: Function to Interact with Twitter stream API and Process Data
+      //Most Important: Function to interact with Twitter stream API and Process Data
       function twit_stream(){
         console.log("Connecting to Twitter Stream API...........");
         
@@ -69,7 +69,6 @@ io.sockets.on('connection', function (socket) {
                   socket.emit('twitter-stream', outputPoint);
                 }
                 
-                //If Tweet is about some place
                 else if(data.place){
                  
                   if(data.place.bounding_box === 'Polygon'){
@@ -96,23 +95,25 @@ io.sockets.on('connection', function (socket) {
                 }
               }
 
-              //On exceeding rate limit 
               stream.on('limit', function(limitMessage) {
                 return console.log(limitMessage);
               });
-
-              //On warning
+              
               stream.on('warning', function(warning) {
                 return console.log(warning);
               });
 
-              //On disconnect
+              stream.on('uncaughtException',function(exception){
+                console.log(exception);
+              });
+              
               stream.on('disconnect', function(disconnectMessage) {
                 return console.log(disconnectMessage);
                 io.emit('user disconnected');
+
               });
             }); 
-          //Adding Listeners limit
+          //Adding Listeners limit for Broadcasting
           stream.setMaxListeners(800);
         });}
       }
@@ -120,4 +121,3 @@ io.sockets.on('connection', function (socket) {
   // Emits signal to the client when they are connected and they can start receiving Tweets
   socket.emit("connected");
 });
-
