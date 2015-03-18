@@ -41,12 +41,12 @@
     outline: #D64541;
   }
   input{
-    padding-right: 8px;
-    padding-left: 8px;
-    line-height: 2.0;
+    padding-right: 4px;
+    padding-left: 4px;
+    line-height: 1.8;
   }
-  .btn-primary{
-    margin-right:10px;
+  #time{
+    margin-right:25px;
   }
 </style>
 
@@ -60,8 +60,8 @@
         </h3> 
       </div>
       <div class="col-md-4 col-xs-4" style="text-align:right;margin-top:17px;">
-        <input type="number" max="30" min="1" id="time" name="time"  required>
-        <button type="type" class="btn btn-primary" onclick="setduration();" >Set Duration</button>
+      Set Time Duration:
+        <input type="number" max="30" min="1" id="time" name="time"  value="1" >
         <button type="type" class="btn btn-danger" onclick="resetmap();">Reset Map</button>
       </div>
     </div>
@@ -91,7 +91,6 @@
     //Creating graticule of Earth's sphere
     var graticule = d3.geo.graticule();
 
-  //Creating SVG canvas
     var svg = d3.select(".map").append("svg")
     .attr("width", width)
     .attr("height", height);
@@ -161,38 +160,39 @@
   //Function to reset the Map i.e removing all the circles
   function resetmap(){
     d3.selectAll('circle').transition()
-    .duration(400)
-    .delay(170)
+    .duration(300)
+    .delay(100)
     .ease("out-in")
-    .attr("r","12px")
+    .attr("r","9px")
     .style("fill","#F89406")
     .style("fill-opacity","0.8")
     .remove()
   }
 
-  /*
-  var tim_dur=600000;
+  //Function to set duration for resetting the Map.
+  function dur_repeat() {
+      
+      time=(document.getElementById('time').value)*6*10000;
+      console.log("Entering Function",time);
 
-  var setDur=setInterval(function(){
-    resetmap();
-  },tim_dur);
+      console.log("Resetting...");
+      resetmap();
 
-  function setduration(){
-    
-    clearInterval(setDur);
-
-    tim_dur=60*1000*(document.getElementById('time').value);
-
-    if(isNaN(tim_dur)){
-      alert("No time duration is given or Time duration not a valid number value"); 
-    }
-    else{
-      setDur(tim_dur);
-    }
+      if(time>=60000 && time<=1800000){
+        console.log("Recursive Call....");
+          timer = setTimeout(dur_repeat, time);
+          //clearTimeout(timer);
+        }
+        
+      else{
+        alert("Time Duration is not valid or It is out of range(1-30)!");
+      }
   };
-  */
+
+  $(document).ready(function(){
+    dur_repeat();
+  });
 
 </script>
-
 
 </body>
