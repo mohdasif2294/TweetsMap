@@ -32,7 +32,7 @@ Mission Accomplished! You are done.
 <h3>Technologies used:</h3>
 
 FrameWork:
-Node.js, Express
+Node.js, Expressjs
 
 WebSocket Library:
 Socket.io
