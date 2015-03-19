@@ -9,7 +9,7 @@ Download this project.
 Install Node.js from https://nodejs.org/
 
 Go to the Project library and type:
-<pre>node install</pre> 
+<pre>npm install</pre> 
 
 It will download all the required supporting packages.
 
