@@ -6,13 +6,14 @@ Server.js serves as the server for the clients.
 
 Download this project.
 
- Download Node.js(https://nodejs.org/) and install it by following commands:
+ Download Node.js(https://nodejs.org/) and install it by following the commands:
 
 <pre>Uncompress the Nodejs package and cd to the folder</pre>
 <pre>./configure</pre>
 <pre>make</pre>
 <pre>make install</pre>
-npm and nodejs is installed.
+
+npm and nodejs will be installed.
 
 Now, go to the downloaded project and type:
 <pre>npm install</pre> 
@@ -21,6 +22,7 @@ It will download all the required supporting packages.
 
 Run: <pre>node server</pre>
 Server will start running.
+
 
 Open web browser and navigate to:  
 <pre>http://localhost:8081</pre>
