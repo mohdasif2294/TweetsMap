@@ -6,9 +6,7 @@ Server.js serves as the server for the clients.
 
 Download this project.
 
-Install Node.js from https://nodejs.org/
-
-And follow this commands:
+ Download Node.js(https://nodejs.org/) and install it by following commands:
 
 <pre>Uncompress the project and cd to the folder</pre>
 <pre>./configure</pre>
