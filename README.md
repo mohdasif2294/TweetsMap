@@ -12,13 +12,15 @@ Download this project.
 <pre>./configure</pre>
 <pre>make</pre>
 <pre>make install</pre>
+npm and nodejs is installed.
 
-Go to the Project library and type:
+Now, go to the downloaded project and type:
 <pre>npm install</pre> 
 
 It will download all the required supporting packages.
 
 Run: <pre>node server</pre>
+Server will start running.
 
 Open web browser and navigate to:  
 <pre>http://localhost:8081</pre>
