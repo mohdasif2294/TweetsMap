@@ -8,7 +8,7 @@ Download this project.
 
  Download Node.js(https://nodejs.org/) and install it by following commands:
 
-<pre>Uncompress the project and cd to the folder</pre>
+<pre>Uncompress the Nodejs package and cd to the folder</pre>
 <pre>./configure</pre>
 <pre>make</pre>
 <pre>make install</pre>
