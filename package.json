@@ -21,8 +21,8 @@
    "keywords": [
    "Twitter",
    "stream API",
-   "Nodejs"
-   "D3.js"],
+   "Nodejs",
+   "D3.js" ],
    "engines": {
     "node": "0.12.x"
   },
