@@ -9,9 +9,6 @@
   { "type" : "git"
   , "url" : "https://github.com/mohdasif2294/TweetsMap.git"
   },
-  "scripts": {
-    "start": "node app"
-  },
   "dependencies": {
     "express": "*",
     "twitter": "*",
