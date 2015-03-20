@@ -109,7 +109,7 @@ io.sockets.on('connection', function (socket) {
               
               stream.on('disconnect', function(disconnectMessage) {
                 return console.log(disconnectMessage);
-                io.emit('user disconnected');
+                //socket.emit('user disconnected');
 
               });
             }); 
