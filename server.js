@@ -16,10 +16,10 @@ server.listen(process.env.PORT || 8081);
 
 //Setup Node-Twitter (twitter Stream API Wrapper)
 var twit = new twitter({
-	consumer_key: 'EQqSoEf7SpY3oL0cVg4zNYgpL',
-	consumer_secret: '7z6s0YD1QAohKRyA2h46SCwtyBQN4FuAuLG6NmrDyVGCiJNRmy',
-	access_token_key: '3034933350-LFGtlABnaLYlwU3pj5Mhbb0IUpjl1Mxk8VQOJyb',
-	access_token_secret: 'cGP4qS1w0rML8o6sG90ApwTivHemzZVgYRwr1d1VKYdvR'
+  consumer_key: 'EQqSoEf7SpY3oL0cVg4zNYgpL',
+  consumer_secret: '7z6s0YD1QAohKRyA2h46SCwtyBQN4FuAuLG6NmrDyVGCiJNRmy',
+  access_token_key: '3034933350-LFGtlABnaLYlwU3pj5Mhbb0IUpjl1Mxk8VQOJyb',
+  access_token_secret: 'cGP4qS1w0rML8o6sG90ApwTivHemzZVgYRwr1d1VKYdvR'
 }),
 stream = null;
 
@@ -32,12 +32,12 @@ var count=0;
 io.sockets.on('connection', function (socket) {
 
   //On Connection with Client
-	socket.on("Send tweets", function() {
+  socket.on("Send tweets", function() {
 
-		if(stream === null) {
+    if(stream === null) {
       //Calling Twitter Stream Api after set interval. 
       //Reason: Twitter Stream API stops providing data after some time because of rate limiting.
-			setInterval(function(){
+      setInterval(function(){
 
         twit_stream();
       },86000);
@@ -54,7 +54,8 @@ io.sockets.on('connection', function (socket) {
         
         //On recieving Data
         stream.on('data', function(data) {
-              // Checking whether JSON result have coordinates
+          
+            // Checking whether JSON result have coordinates
               if (data.coordinates){
                 
                 if (data.coordinates !== null){
@@ -94,8 +95,9 @@ io.sockets.on('connection', function (socket) {
                   }
                 }
               }
+            });
 
-              stream.on('limit', function(limitMessage) {
+            stream.on('limit', function(limitMessage) {
                 return console.log(limitMessage);
               });
               
@@ -107,12 +109,20 @@ io.sockets.on('connection', function (socket) {
                 console.log(exception);
               });
               
+              stream.on('error',function(error){
+                return console.log(error);
+              });
+
+
+              stream.on('end',function(end){
+                return console.log(end);
+              });
+
               stream.on('disconnect', function(disconnectMessage) {
                 return console.log(disconnectMessage);
-                //socket.emit('user disconnected');
+                io.emit('user disconnected');
 
-              });
-            }); 
+              }); 
           //Adding Listeners limit for Broadcasting
           stream.setMaxListeners(800);
         });}
