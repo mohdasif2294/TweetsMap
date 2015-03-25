@@ -7,7 +7,7 @@
 <script src="js/jquery-2.1.3.min.js" type="text/javascript" charset="UTF-8"></script>
 <script src="js/bootstrap.min.js" type="text/javascript" charset="UTF-8"></script>
 <link href="css/bootstrap.min.css" rel="stylesheet" />
-<script src="http://d3js.org/d3.geo.projection.v0.min.js"></script>
+<script src="js/d3.geo.projection.v0.min.js"></script>
 <script src="js/topojson.v1.min.js"></script>     <!--World Map geo Data -->
 
 <style>
@@ -53,15 +53,15 @@
 <body>
   <div class="container-fluid">
 
-    <div class="row" style="background-color:">
-      <div class="col-md-8 col-xs-8">
+    <div class="row" style="background-color:#F4B350;color:#4DAF7C;border-bottom:#4DAF7C">
+      <div class="col-md-8 col-xs-5">
         <h3 style="font-size:28px">
-          <u><b>Tweets Live Map</b></u>
+          <b>Tweets Live Map</b>
         </h3> 
       </div>
-      <div class="col-md-4 col-xs-4" style="text-align:right;margin-top:17px;">
+      <div class="col-md-4 col-xs-7" style="text-align:right;margin-top:17px;">
       Set Time Duration:
-        <input type="number" max="30" min="1" id="time" name="time"  value="1" >
+        <input type="number" max="30" min="1" id="time" name="time"  value="2" >
         <button type="type" class="btn btn-danger" onclick="resetmap();">Reset Map</button>
       </div>
     </div>
@@ -70,17 +70,24 @@
       <div class="map">
       </div>
     </div>
+    <div class="row" style="text-align:center; background-color:#4DAF7C;color:#F4B350">
+     <b> &#169; 2015 <a style="text-decoration:none;color:#F4B350" href="https://github.com/mohdasif2294/">Mohammad Asif</a></b>
+    </div>
   </div>
   
 <!--Script for Loading D3 Map and Recieve coordinates from Server-->
   <script>
-  //Setting Height and width of SVG canvas
-    var width = 1280,
-    height = 580;
+  //Setting Height and width of SVG canvas {Edit: Responsiveness}
+  var margin = {top: 10, left: 10, bottom: 10, right: 10}
+  , width = parseInt(d3.select('.map').style('width'))
+  , width = width - margin.left - margin.right
+  , mapRatio = .5
+  , height = width * mapRatio;
+ 
 
   //Projecting 3D world in 2D 
     var projection = d3.geo.patterson()
-    .scale(195)
+    .scale(width*0.155)
     .translate([width / 2, height / 2])
     .precision(.1);
 
@@ -138,7 +145,7 @@
       //Checking whether socket is initialised or not
       if(io !== undefined) {
         // Storage for WebSocket connections
-        var socket = io.connect('http://localhost:8081');	
+        var socket = io.connect('/');	
 
         //On recieving twitter stream data calling function to plot coordinates
         socket.on('twitter-stream', function (tweet) {
@@ -192,6 +199,40 @@
   $(document).ready(function(){
     dur_repeat();
   });
+
+//Calling function on resize for setting new height and width
+  d3.select(window).on('resize', resize);
+
+//To make the web app responsive to mobiles
+function resize() {
+    // adjust things when the window size changes
+    width = parseInt(d3.select('.map').style('width'));
+    width = width - margin.left - margin.right;
+    height = width * mapRatio;
+
+    // update projection
+    projection
+        .translate([width / 2, height / 2])
+        .scale(width*0.155);
+
+    // resize the map container
+    svg
+        .style('width', width + 'px')
+        .style('height', height + 'px');
+
+    // resize the map
+    d3.selectAll('circle').transition()
+    .duration(300)
+    .delay(100)
+    .ease("out-in")
+    .attr("r","9px")
+    .style("fill","#F89406")
+    .style("fill-opacity","0.8")
+    .remove();
+    
+    svg.select('.land').attr('d', path);
+    svg.selectAll('.boundary').attr('d', path);
+}
 
 </script>
 
